@@ -2,13 +2,14 @@ let order = [];
 let playerOrder = [];
 let flash;
 let turn;
-let good;
+let patternmatch;
 let compTurn;
 let intervalId;
 let strict = false;
 let noise = true;
 let on = false;
 let win;
+let highscore;
 
 const turnCounter = document.querySelector("#turn");
 const topLeft = document.querySelector("#topleft");
@@ -53,7 +54,7 @@ function play() {
   intervalId = 0;
   turn = 1;
   turnCounter.innerHTML = 1;
-  good = true;
+  patternmatch = true;
   for (var i = 0; i < 20; i++) {
     order.push(Math.floor(Math.random() * 4) + 1);
   }
@@ -188,17 +189,18 @@ bottomRight.addEventListener('click', (event) => {
 
 function check() {
   if (playerOrder[playerOrder.length - 1] !== order[playerOrder.length - 1])
-    good = false;
+    patternmatch = false;
 
-  if (playerOrder.length == 5 && good) {
+  if (playerOrder.length == 5 && !patternmatch) {
     winGame();
   }
-
-  if (good == false) {
+  if (!patternmatch) {
     flashColor();
-    turnCounter.innerHTML = "NO!";
+    turnCounter.innerHTML = "LOST!";
+
     setTimeout(() => {
       turnCounter.innerHTML = turn;
+      alert("your score" + playerOrder.length )
       clearColor();
 
       if (strict) {
@@ -207,19 +209,19 @@ function check() {
         compTurn = true;
         flash = 0;
         playerOrder = [];
-        good = true;
+        patternmatch = true;
         intervalId = setInterval(gameTurn, 800);
       }
     }, 800);
 
     noise = false;
   }
-//change name of good variable
+//change name of patternmatch variable
 //use === instead ==
 //replace == comparision with !
 // check indentation and spacing
 
-  if (turn == playerOrder.length && good && !win) {
+  if (turn == playerOrder.length && patternmatch && !win) {
     turn++;
     playerOrder = [];
     compTurn = true;
@@ -232,9 +234,12 @@ function check() {
 
 function winGame() {
   flashColor();
+  
+  highscore = playerOrder.length;
   turnCounter.innerHTML = "WIN!";
   on = false;
   win = true;
+ alert("Your score  "+ playerOrder.length)
 }
 
 
