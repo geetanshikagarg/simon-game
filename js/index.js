@@ -45,7 +45,7 @@ onButton.addEventListener('click', (event) => {
   }
 });
 
-highScore.innerHTML += `${sessionStorage.highScore} 0` ;
+highScore.innerHTML = sessionStorage.highScore;
 startButton.addEventListener('click', (event) => {
   if (on || win) {
     play();
