@@ -9,7 +9,6 @@ let strict = false;
 let noise = true;
 let on = false;
 let win;
-let highscore;
 
 const turnCounter = document.querySelector("#turn");
 const topLeft = document.querySelector("#topleft");
@@ -19,7 +18,7 @@ const bottomRight = document.querySelector("#bottomright");
 const strictButton = document.querySelector("#strict");
 const onButton = document.querySelector("#on");
 const startButton = document.querySelector("#start");
-
+const highScore = document.querySelector(".high-score");
 strictButton.addEventListener('click', (event) => {
   if (strictButton.checked) {
     strict = true;
@@ -27,7 +26,13 @@ strictButton.addEventListener('click', (event) => {
     strict = false;
   }
 });
- 
+
+if(!sessionStorage.highScore)
+{
+  sessionStorage.setItem("highScore",0)
+  highScore.innerHTML = sessionStorage.highScore
+}
+
 onButton.addEventListener('click', (event) => {
   if (onButton.checked) {
     on = true;
@@ -40,6 +45,7 @@ onButton.addEventListener('click', (event) => {
   }
 });
 
+highScore.innerHTML += `${sessionStorage.highScore} 0` ;
 startButton.addEventListener('click', (event) => {
   if (on || win) {
     play();
@@ -190,17 +196,21 @@ bottomRight.addEventListener('click', (event) => {
 function check() {
   if (playerOrder[playerOrder.length - 1] !== order[playerOrder.length - 1])
     patternmatch = false;
-
-  if (playerOrder.length == 5 && !patternmatch) {
+  
+  if (playerOrder.length == 5 && patternmatch) {
     winGame();
   }
   if (!patternmatch) {
     flashColor();
     turnCounter.innerHTML = "LOST!";
-
     setTimeout(() => {
       turnCounter.innerHTML = turn;
-      alert("your score" + playerOrder.length )
+      // console.log(sessionStorage.highScore,turn)
+      if(turn > Number(sessionStorage.highScore))
+      sessionStorage.highScore = turn;
+      highScore.innerHTML= sessionStorage.highScore;
+
+      alert("your score  " + turn )
       clearColor();
 
       if (strict) {
@@ -227,19 +237,22 @@ function check() {
     compTurn = true;
     flash = 0;
     turnCounter.innerHTML = turn;
+    
     intervalId = setInterval(gameTurn, 800);
+ 
+
   }
 
 }
 
 function winGame() {
   flashColor();
-  
-  highscore = playerOrder.length;
+
   turnCounter.innerHTML = "WIN!";
   on = false;
   win = true;
  alert("Your score  "+ playerOrder.length)
+
 }
 
 
